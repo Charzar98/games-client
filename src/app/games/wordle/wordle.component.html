@@ -1,0 +1,21 @@
+<mat-form-field>
+  <mat-label>Letter Count</mat-label>
+  <input type="number" matInput>
+</mat-form-field>
+
+<button mat-button (click)="getRandomWord(5)">Generate Word</button>
+
+<ng-container *ngIf="wordleFormGroup" [formGroup]="wordleFormGroup">
+<ng-container *ngIf="wordleFormGroup.controls.letters?.length">
+  <ng-container *ngFor="let _ of wordleFormGroup.controls.letters.controls; let index = index;">
+    <div>
+    <mat-form-field>
+      <mat-label>Letter {{ index + 1 }}</mat-label>
+      <input matInput>
+    </mat-form-field>
+    </div>
+  </ng-container>
+</ng-container>
+
+  <button mat-button (click)="guessWord()">Guess</button>
+</ng-container>
