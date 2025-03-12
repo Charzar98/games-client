@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from "@angular/router";
-import { WordleComponent } from "./games/wordle/wordle.component";
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
+import { WordleComponent } from './games/wordle/wordle.component';
 
 @Component({
   selector: 'app-root',
@@ -13,5 +13,12 @@ import { WordleComponent } from "./games/wordle/wordle.component";
   standalone: true
 })
 export class AppComponent {
-  title = 'games-client';
+  private readonly router = inject(Router);
+
+  test() {
+    // Fix Routing
+    this.router.navigate(['../wordle']).catch(error => {
+      console.log(error);
+    });
+  }
 }
