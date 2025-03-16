@@ -1,0 +1,45 @@
+//var(--absent-color, #3a3a3c)
+//var(--present-color, #b59f3b)
+//var(--success-color, #538d4e)
+
+.wordle-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 10rem 10rem 10rem;
+}
+
+.wordle-header {
+  display: flex;
+  max-width: fit-content;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.word-container {
+
+}
+
+.letter-input {
+  font-size: 1.5rem;
+  max-width: 1.5rem;
+  text-align: center;
+  color: #ffffff;
+  border: solid 1px #3a3a3c;
+  border-radius: 5px;
+  background-color: #3a3a3c;
+  text-transform: capitalize;
+}
+
+.word-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 15px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}

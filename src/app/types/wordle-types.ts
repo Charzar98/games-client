@@ -1,11 +1,32 @@
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
+export enum LetterState {
+  Null,
+  Absent,
+  Present,
+  Correct
+}
+
+export interface GuessedLetterFormControl {
+  letterValue: FormControl<string | null>;
+  letterState: FormControl<LetterState>;
+}
+
 export interface WordleFormGroup {
   // Individual letters obtained from the random word
   trueLetters: FormArray<FormControl<string>>;
   // Individual letters from the word the user has guessed
-  guessedLetters: FormArray<FormControl<string | null>>;
+  guessedLetters: FormArray<FormGroup<GuessedLetterFormControl>>;
   wordToGuess: FormControl<string>;
+}
+
+function getGuessedLetterFormGroup() {
+  return new FormGroup<GuessedLetterFormControl>({
+    letterValue: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.pattern('^[a-zA]$')]
+    }),
+    letterState: new FormControl<LetterState>(LetterState.Null, { nonNullable: true })
+  });
 }
 
 export function getWordleFormGroup(word: string): FormGroup<WordleFormGroup> {
@@ -16,13 +37,9 @@ export function getWordleFormGroup(word: string): FormGroup<WordleFormGroup> {
     trueLetters: new FormArray<FormControl<string>>(
       word.split('').map(letter => new FormControl<string>(letter, {
         nonNullable: true
-      })), { validators: [Validators.maxLength(word.length)] }),
-    guessedLetters: new FormArray<FormControl<string | null>>(
-      word.split('').map(_ => new FormControl<string | null>(null, {
-        validators: [Validators.required, Validators.pattern('^[a-zA]$')]
-      })), {
-        validators: [Validators.maxLength(word.length)]
-      })
+      }))),
+    guessedLetters: new FormArray<FormGroup<GuessedLetterFormControl>>(
+      word.split('').map(_ => getGuessedLetterFormGroup()))
   });
 }
 

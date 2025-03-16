@@ -1,16 +1,16 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ExternalRequestsServiceService } from '../../services/external-requests-service.service';
-import { firstValueFrom } from 'rxjs';
+import { ExternalRequestsService } from '../../services/external-requests.service';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { getLetterCountFormControl, getWordleFormGroup, WordleFormGroup } from '../../types/wordle-types';
+import { getLetterCountFormControl, getWordleFormGroup, LetterState, WordleFormGroup } from '../../types/wordle-types';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-wordle',
   standalone: true,
-  imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatButtonModule],
+  imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSnackBarModule],
   templateUrl: './wordle.component.html',
   styleUrls: ['./wordle.component.scss']
 })
@@ -18,25 +18,39 @@ export class WordleComponent {
   public wordleFormGroup!: FormGroup<WordleFormGroup>;
   public letterCount: FormControl<number> = getLetterCountFormControl();
 
-  private readonly externalServices: ExternalRequestsServiceService = inject(ExternalRequestsServiceService);
+  private readonly snackBar: MatSnackBar = inject(MatSnackBar);
+  private readonly externalServices: ExternalRequestsService = inject(ExternalRequestsService);
 
   public async getRandomWord(letterCount: number) {
-    await firstValueFrom(this.externalServices.getRandomWord(letterCount)).then(word => {
+    await this.externalServices.getRandomWord(letterCount).then(word => {
       this.wordleFormGroup = getWordleFormGroup(word);
+    }).catch(_ => {
+      this.snackBar.open('Error Fetching Word', _, { duration: 5000 });
     });
-    console.log(this.wordleFormGroup.controls.guessedLetters.errors);
   }
 
   public guessWord() {
     for (let i = 0; i < this.wordleFormGroup.controls.trueLetters.controls.length; i++) {
-      console.log(this.wordleFormGroup.controls.trueLetters.at(i).value === this.wordleFormGroup.controls.guessedLetters.at(i).value)
+      const trueLetter = this.wordleFormGroup.controls.trueLetters.controls[i];
+      const guessedLetter = this.wordleFormGroup.controls.guessedLetters.controls[i];
+
+      switch (true) {
+        case guessedLetter.controls.letterValue.value === trueLetter.value:
+          guessedLetter.controls.letterState.patchValue(LetterState.Correct);
+          break;
+        case this.wordleFormGroup.controls.trueLetters.controls.some(x => x.value === guessedLetter?.controls.letterValue.value):
+          guessedLetter.controls.letterState.patchValue(LetterState.Present);
+          break;
+        default:
+          guessedLetter.controls.letterState.patchValue(LetterState.Absent);
+          break;
+      }
     }
   }
 
-  public clear() {
+  public clearInputs() {
     this.wordleFormGroup.controls.guessedLetters.controls.forEach(letter => letter.reset());
   }
 
-
-  // TODO find out what this means: gantlets
+  protected readonly onkeyup = onkeyup;
 }
