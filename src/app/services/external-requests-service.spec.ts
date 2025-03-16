@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ExternalRequestsServiceService } from './external-requests-service.service';
+import { ExternalRequestsService } from './external-requests.service';
 
 describe('ExternalRequestsServiceService', () => {
-  let service: ExternalRequestsServiceService;
+  let service: ExternalRequestsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ExternalRequestsServiceService);
+    service = TestBed.inject(ExternalRequestsService);
   });
 
   it('should be created', () => {
