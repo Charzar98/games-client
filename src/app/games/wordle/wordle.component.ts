@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExternalRequestsService } from '../../services/external-requests.service';
 import { MatInputModule } from '@angular/material/input';
