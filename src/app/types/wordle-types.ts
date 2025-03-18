@@ -12,12 +12,15 @@ export interface GuessedLetterFormControl {
   letterState: FormControl<LetterState>;
 }
 
+// Parent form group
 export interface WordleFormGroup {
   // Individual letters obtained from the random word
   trueLetters: FormArray<FormControl<string>>;
   // Individual letters from the word the user has guessed
   guessedLetters: FormArray<FormGroup<GuessedLetterFormControl>>;
   wordToGuess: FormControl<string>;
+  // Number of letters in wordToGuess + 1
+  numberOfGuesses: FormControl<number>;
 }
 
 function getGuessedLetterFormGroup() {
@@ -39,7 +42,8 @@ export function getWordleFormGroup(word: string): FormGroup<WordleFormGroup> {
         nonNullable: true
       }))),
     guessedLetters: new FormArray<FormGroup<GuessedLetterFormControl>>(
-      word.split('').map(_ => getGuessedLetterFormGroup()))
+      word.split('').map(_ => getGuessedLetterFormGroup())),
+    numberOfGuesses: new FormControl<number>(word.length + 1, { nonNullable: true })
   });
 }
 
