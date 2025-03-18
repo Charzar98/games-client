@@ -13,14 +13,19 @@
 
   <ng-container *ngIf="wordleFormGroup" [formGroup]="wordleFormGroup">
     <div class="word-container">
-      <div class="word-row">
-        <ng-container *ngFor="let letter of wordleFormGroup.controls.guessedLetters.controls">
+      <div class="word-row" appWordleDirective (emitEnter)="guessWord()">
+        @for (letter of wordleFormGroup.controls.guessedLetters.controls; track letter.controls.letterValue; let index = $index) {
           <div class="letter-container">
             <input class="letter-input"
                    [maxLength]="1"
-                   [formControl]="letter.controls.letterValue">
+                   [formControl]="letter.controls.letterValue"
+                   [ngClass]="{
+                   'letter-status-absent' : letter.controls.letterState.value === LetterState.Absent,
+                   'letter-status-present' : letter.controls.letterState.value === LetterState.Present,
+                   'letter-status-correct' : letter.controls.letterState.value === LetterState.Correct
+                   }">
           </div>
-        </ng-container>
+        }
       </div>
 
       <div class="button-container">
@@ -30,6 +35,7 @@
           Guess
         </button>
         <button mat-button (click)="clearInputs()">Clear</button>
+        <button mat-button (click)="navigateToDictionaryLink()">I'm Stumped</button>
       </div>
     </div>
   </ng-container>

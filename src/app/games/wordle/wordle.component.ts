@@ -6,11 +6,12 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { getLetterCountFormControl, getWordleFormGroup, LetterState, WordleFormGroup } from '../../types/wordle-types';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { WordleDirective } from './wordle.directive';
 
 @Component({
   selector: 'app-wordle',
   standalone: true,
-  imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSnackBarModule],
+  imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSnackBarModule, WordleDirective],
   templateUrl: './wordle.component.html',
   styleUrls: ['./wordle.component.scss']
 })
@@ -18,18 +19,25 @@ export class WordleComponent {
   public wordleFormGroup!: FormGroup<WordleFormGroup>;
   public letterCount: FormControl<number> = getLetterCountFormControl();
 
+  protected readonly LetterState: typeof LetterState = LetterState;
+
   private readonly snackBar: MatSnackBar = inject(MatSnackBar);
   private readonly externalServices: ExternalRequestsService = inject(ExternalRequestsService);
+
 
   public async getRandomWord(letterCount: number) {
     await this.externalServices.getRandomWord(letterCount).then(word => {
       this.wordleFormGroup = getWordleFormGroup(word);
     }).catch(_ => {
-      this.snackBar.open('Error Fetching Word', _, { duration: 5000 });
+      this.snackBar.open('Error Fetching Word', undefined, { duration: 5000 });
     });
   }
 
   public guessWord() {
+    if (this.wordleFormGroup.controls.guessedLetters.length !== this.wordleFormGroup.controls.trueLetters.length) return;
+
+    this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
+
     for (let i = 0; i < this.wordleFormGroup.controls.trueLetters.controls.length; i++) {
       const trueLetter = this.wordleFormGroup.controls.trueLetters.controls[i];
       const guessedLetter = this.wordleFormGroup.controls.guessedLetters.controls[i];
@@ -52,5 +60,7 @@ export class WordleComponent {
     this.wordleFormGroup.controls.guessedLetters.controls.forEach(letter => letter.reset());
   }
 
-  protected readonly onkeyup = onkeyup;
+  public navigateToDictionaryLink() {
+    window.open(`https://www.merriam-webster.com/dictionary/${this.wordleFormGroup.controls.wordToGuess.value}`, '_blank');
+  }
 }
