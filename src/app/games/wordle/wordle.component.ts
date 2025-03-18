@@ -1,17 +1,23 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExternalRequestsService } from '../../services/external-requests.service';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { getLetterCountFormControl, getWordleFormGroup, LetterState, WordleFormGroup } from '../../types/wordle-types';
+import {
+  getLetterCountFormControl,
+  getWordleFormGroup,
+  GuessedLetterFormControl,
+  LetterState,
+  WordleFormGroup
+} from '../../types/wordle-types';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { WordleDirective } from './wordle.directive';
+import { WordleRowDirective } from './wordle-row.directive';
 
 @Component({
   selector: 'app-wordle',
   standalone: true,
-  imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSnackBarModule, WordleDirective],
+  imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSnackBarModule, WordleRowDirective],
   templateUrl: './wordle.component.html',
   styleUrls: ['./wordle.component.scss']
 })
@@ -24,7 +30,6 @@ export class WordleComponent {
   private readonly snackBar: MatSnackBar = inject(MatSnackBar);
   private readonly externalServices: ExternalRequestsService = inject(ExternalRequestsService);
 
-
   public async getRandomWord(letterCount: number) {
     await this.externalServices.getRandomWord(letterCount).then(word => {
       this.wordleFormGroup = getWordleFormGroup(word);
@@ -34,7 +39,7 @@ export class WordleComponent {
   }
 
   public guessWord() {
-    if (this.wordleFormGroup.controls.guessedLetters.length !== this.wordleFormGroup.controls.trueLetters.length) return;
+    if (this.wordleFormGroup.controls.guessedLetters.invalid) return;
 
     this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
 
@@ -53,6 +58,12 @@ export class WordleComponent {
           guessedLetter.controls.letterState.patchValue(LetterState.Absent);
           break;
       }
+    }
+  }
+
+  public validateInput(letter: FormGroup<GuessedLetterFormControl>) {
+    if (letter.invalid) {
+      letter.reset();
     }
   }
 
