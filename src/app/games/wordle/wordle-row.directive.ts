@@ -49,16 +49,24 @@ export class WordleRowDirective implements AfterViewInit {
   }
 
   private focusNextElement() {
-    if (this.currentFocusedElement.nextElementSibling) {
-      (this.currentFocusedElement?.nextElementSibling?.firstChild as HTMLInputElement).focus();
-      this.currentFocusedElement = this.currentFocusedElement?.nextElementSibling as HTMLDivElement;
-    }
+    // TODO: Fix this
+    setTimeout(() => {
+      if (this.currentFocusedElement.nextElementSibling) {
+        (this.currentFocusedElement?.nextElementSibling?.firstChild as HTMLInputElement).focus();
+        this.currentFocusedElement = this.currentFocusedElement?.nextElementSibling as HTMLDivElement;
+        (this.currentFocusedElement.firstChild as HTMLInputElement).select();
+      }
+    })
   }
 
   private focusPreviousElement() {
-    if (this.currentFocusedElement.previousElementSibling) {
-      (this.currentFocusedElement?.previousElementSibling?.firstChild as HTMLInputElement).focus();
-      this.currentFocusedElement = this.currentFocusedElement?.previousElementSibling as HTMLDivElement;
-    }
+    // TODO: Fix this
+    setTimeout(() => {
+      if (this.currentFocusedElement.previousElementSibling) {
+        (this.currentFocusedElement?.previousElementSibling?.firstChild as HTMLInputElement).focus();
+        this.currentFocusedElement = this.currentFocusedElement?.previousElementSibling as HTMLDivElement;
+        (this.currentFocusedElement.firstChild as HTMLInputElement).select();
+      }
+    })
   }
 }

@@ -8,24 +8,34 @@ import {
   getLetterCountFormControl,
   getWordleFormGroup,
   GuessedLetterFormControl,
-  LetterState,
   WordleFormGroup
 } from '../../types/wordle-types';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { WordleRowDirective } from './wordle-row.directive';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+
+const absentState = state('absent', style({ backgroundColor: '#3a3a3c' }));
+const presentState = state('present', style({ backgroundColor: '#b59f3b' }));
+const correctState = state('correct', style({ backgroundColor: '#538d4e' }));
 
 @Component({
   selector: 'app-wordle',
   standalone: true,
   imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSnackBarModule, WordleRowDirective],
   templateUrl: './wordle.component.html',
-  styleUrls: ['./wordle.component.scss']
+  styleUrls: ['./wordle.component.scss'],
+  animations: [trigger('guessLetterAnimation', [
+    absentState,
+    presentState,
+    correctState,
+    transition(':enter, * => absent, * => present, * => correct', [
+      animate(1000, style({ transform: 'rotate(1turn)' }))
+    ])
+  ])]
 })
 export class WordleComponent {
   public wordleFormGroup!: FormGroup<WordleFormGroup>;
   public letterCount: FormControl<number> = getLetterCountFormControl();
-
-  protected readonly LetterState: typeof LetterState = LetterState;
 
   private readonly snackBar: MatSnackBar = inject(MatSnackBar);
   private readonly externalServices: ExternalRequestsService = inject(ExternalRequestsService);
@@ -39,9 +49,12 @@ export class WordleComponent {
   }
 
   public guessWord() {
-    if (this.wordleFormGroup.controls.guessedLetters.invalid) return;
+    this.decrementGuesses();
 
-    this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
+    if (this.wordleFormGroup.controls.numberOfGuesses.invalid) {
+      this.wordleFormGroup.controls.guessedLetters.disable();
+      return;
+    }
 
     for (let i = 0; i < this.wordleFormGroup.controls.trueLetters.controls.length; i++) {
       const trueLetter = this.wordleFormGroup.controls.trueLetters.controls[i];
@@ -49,13 +62,13 @@ export class WordleComponent {
 
       switch (true) {
         case guessedLetter.controls.letterValue.value === trueLetter.value:
-          guessedLetter.controls.letterState.patchValue(LetterState.Correct);
+          guessedLetter.controls.letterState.patchValue('correct');
           break;
         case this.wordleFormGroup.controls.trueLetters.controls.some(x => x.value === guessedLetter?.controls.letterValue.value):
-          guessedLetter.controls.letterState.patchValue(LetterState.Present);
+          guessedLetter.controls.letterState.patchValue('present');
           break;
         default:
-          guessedLetter.controls.letterState.patchValue(LetterState.Absent);
+          guessedLetter.controls.letterState.patchValue('absent');
           break;
       }
     }
@@ -65,6 +78,10 @@ export class WordleComponent {
     if (letter.invalid) {
       letter.reset();
     }
+  }
+
+  private decrementGuesses() {
+    this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
   }
 
   public clearInputs() {
