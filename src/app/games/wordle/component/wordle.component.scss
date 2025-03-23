@@ -1,7 +1,3 @@
-//var(--absent-color, #3a3a3c)
-//var(--present-color, #b59f3b)
-//var(--success-color, #538d4e)
-
 .wordle-container {
   display: flex;
   flex-direction: column;
@@ -18,11 +14,6 @@
   justify-content: center;
 }
 
-.letter-container {
-  animation: alternate;
-  animation-delay: 1000ms;
-}
-
 .letter-input {
   font-size: 1.5rem;
   max-width: 1.5rem;
@@ -32,18 +23,6 @@
   border-radius: 5px;
   background-color: #3a3a3c;
   text-transform: capitalize;
-}
-
-.letter-status-absent {
-  background-color: #3a3a3c;
-}
-
-.letter-status-present {
-  background-color: #b59f3b;
-}
-
-.letter-status-correct {
-  background-color: #538d4e;
 }
 
 .word-container {
