@@ -33,7 +33,9 @@
                 (click)="guessWord()">
           Guess
         </button>
-        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid" (click)="clearInputs()">Clear</button>
+        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid" (click)="clearInputs('absent')">All</button>
+        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid" (click)="clearInputs('present')">Leave Yellow/Green</button>
+        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid" (click)="clearInputs('correct')">Leave Green</button>
       </div>
     </div>
   </ng-container>

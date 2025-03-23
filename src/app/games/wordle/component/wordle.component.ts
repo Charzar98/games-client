@@ -1,17 +1,17 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ExternalRequestsService } from '../../services/external-requests.service';
+import { ExternalRequestsService } from '../../../services/external-requests.service';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
   getLetterCountFormControl,
   getWordleFormGroup,
-  GuessedLetterFormControl,
+  GuessedLetterFormControl, LetterState,
   WordleFormGroup
-} from '../../types/wordle-types';
+} from '../wordle-types';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { WordleRowDirective } from './wordle-row.directive';
+import { WordleRowDirective } from '../wordle-row.directive';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 const absentState = state('absent', style({ backgroundColor: '#3a3a3c' }));
@@ -84,8 +84,16 @@ export class WordleComponent {
     this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
   }
 
-  public clearInputs() {
-    this.wordleFormGroup.controls.guessedLetters.controls.forEach(letter => letter.reset());
+  public clearInputs(inputClearMode: LetterState) {
+    this.wordleFormGroup.controls.guessedLetters.controls.forEach(letter => {
+      if (inputClearMode === 'present' && letter.controls.letterState.value === 'absent') {
+        letter.reset();
+      } else if (inputClearMode === 'correct' && (letter.controls.letterState.value === 'absent' || letter.controls.letterState.value === 'present')) {
+        letter.reset();
+      } else {
+        letter.reset();
+      }
+    });
   }
 
   public navigateToDictionaryLink() {
