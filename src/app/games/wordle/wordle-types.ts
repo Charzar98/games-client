@@ -1,6 +1,6 @@
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
-export type LetterState = 'null' | 'absent' | 'present' | 'correct';
+export type LetterState = 'absent' | 'present' | 'correct';
 
 export interface GuessedLetterFormControl {
   letterValue: FormControl<string | null>;
@@ -23,7 +23,7 @@ function getGuessedLetterFormGroup() {
     letterValue: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.pattern('^[a-zA]$')]
     }),
-    letterState: new FormControl<LetterState>('null', { nonNullable: true })
+    letterState: new FormControl<LetterState>('absent', { nonNullable: true })
   });
 }
 
