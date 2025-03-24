@@ -1,22 +1,19 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ExternalRequestsService } from '../../../services/external-requests.service';
+import { ExternalRequestsService } from '../../../services/external-requests/external-requests.service';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
   getLetterCountFormControl,
   getWordleFormGroup,
-  GuessedLetterFormControl, LetterState,
+  GuessedLetterFormControl,
+  LetterState,
   WordleFormGroup
 } from '../wordle-types';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { WordleRowDirective } from '../wordle-row.directive';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-
-const absentState = state('absent', style({ backgroundColor: '#3a3a3c' }));
-const presentState = state('present', style({ backgroundColor: '#b59f3b' }));
-const correctState = state('correct', style({ backgroundColor: '#538d4e' }));
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-wordle',
@@ -25,12 +22,10 @@ const correctState = state('correct', style({ backgroundColor: '#538d4e' }));
   templateUrl: './wordle.component.html',
   styleUrls: ['./wordle.component.scss'],
   animations: [trigger('guessLetterAnimation', [
-    absentState,
-    presentState,
-    correctState,
-    transition(':enter, * => absent, * => present, * => correct', [
-      animate(1000, style({ transform: 'rotate(1turn)' }))
-    ])
+    transition(':enter', [style({ opacity: 0 }), animate(1250, style({ opacity: 1 }))]),
+    transition('* => absent', animate(1000, style({ backgroundColor: '#3a3a3c', transform: 'rotate(1turn)' }))),
+    transition('* => present', animate(1000, style({ backgroundColor: '#b59f3b', transform: 'rotate(1turn)' }))),
+    transition('* => success', animate(1000, style({ backgroundColor: '#538d4e', transform: 'rotate(1turn)' })))
   ])]
 })
 export class WordleComponent {
