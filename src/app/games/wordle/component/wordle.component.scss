@@ -1,9 +1,9 @@
 .wordle-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   gap: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   padding: 2rem 10rem 10rem 10rem;
 }
 
@@ -39,7 +39,17 @@
   display: grid;
   grid-gap: 1rem;
   justify-content: center;
-  grid-template-columns: repeat(auto-fit, minmax(1rem, 3rem));
+  grid-auto-flow: column;
+}
+
+.guess-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+}
+
+.guess-text {
+  align-self: center;
 }
 
 .button-container {

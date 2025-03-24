@@ -6,10 +6,6 @@ export type Theme = 'dark' | 'light';
   providedIn: 'root'
 })
 export class ThemeService {
-  public registerTheme() {
-    document.documentElement.style.setProperty('color-scheme', this.isDarkModeOn() ? 'dark' : 'light');
-  }
-
   public isDarkModeOn() {
     return localStorage.getItem('theme') === 'dark';
   }
