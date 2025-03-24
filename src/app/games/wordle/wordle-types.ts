@@ -4,7 +4,7 @@ export type LetterState = 'absent' | 'present' | 'correct';
 
 export interface GuessedLetterFormControl {
   letterValue: FormControl<string | null>;
-  letterState: FormControl<LetterState>;
+  letterState: FormControl<LetterState | null>;
 }
 
 // Parent form group
@@ -23,7 +23,7 @@ function getGuessedLetterFormGroup() {
     letterValue: new FormControl<string | null>(null, {
       validators: [Validators.required, Validators.pattern('^[a-zA]$')]
     }),
-    letterState: new FormControl<LetterState>('absent', { nonNullable: true })
+    letterState: new FormControl<LetterState | null>(null)
   });
 }
 

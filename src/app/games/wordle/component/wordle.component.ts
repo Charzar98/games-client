@@ -79,13 +79,9 @@ export class WordleComponent {
     this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
   }
 
-  public clearInputs(inputClearMode: LetterState) {
+  public clearInputs() {
     this.wordleFormGroup.controls.guessedLetters.controls.forEach(letter => {
-      if (inputClearMode === 'present' && letter.controls.letterState.value === 'absent') {
-        letter.reset();
-      } else if (inputClearMode === 'correct' && (letter.controls.letterState.value === 'absent' || letter.controls.letterState.value === 'present')) {
-        letter.reset();
-      } else {
+      if (letter.controls.letterState.value === 'absent') {
         letter.reset();
       }
     });
