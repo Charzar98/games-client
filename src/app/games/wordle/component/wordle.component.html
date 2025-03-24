@@ -16,7 +16,8 @@
       <div class="word-row" appWordleRowDirective (emitEnter)="guessWord()">
         @for (letter of wordleFormGroup.controls.guessedLetters.controls; track letter.controls.letterValue; let index = $index) {
           <div class="letter-container">
-            <input class="letter-input" [@guessLetterAnimation]="letter.controls.letterState.value"
+            <input class="letter-input"
+                   [@guessLetterAnimation]="letter.controls.letterState.value"
                    (input)="validateInput(letter)"
                    [maxLength]="1"
                    [formControl]="letter.controls.letterValue">
@@ -25,7 +26,10 @@
       </div>
 
       <div>Guesses left: {{ wordleFormGroup.controls.numberOfGuesses.value }}</div>
-      <button *ngIf="wordleFormGroup.controls.numberOfGuesses.invalid" mat-button (click)="navigateToDictionaryLink()">Go to Definition</button>
+      <button *ngIf="wordleFormGroup.controls.numberOfGuesses.invalid" mat-button
+              (click)="navigateToDictionaryLink()">
+        Go to Definition
+      </button>
 
       <div class="button-container">
         <button mat-button
@@ -33,9 +37,18 @@
                 (click)="guessWord()">
           Guess
         </button>
-        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid" (click)="clearInputs('absent')">All</button>
-        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid" (click)="clearInputs('present')">Leave Yellow/Green</button>
-        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid" (click)="clearInputs('correct')">Leave Green</button>
+        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid"
+                (click)="clearInputs('absent')">
+          All
+        </button>
+        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid"
+                (click)="clearInputs('present')">
+          Leave Yellow/Green
+        </button>
+        <button mat-button [disabled]="wordleFormGroup.controls.guessedLetters.invalid"
+                (click)="clearInputs('correct')">
+          Leave Green
+        </button>
       </div>
     </div>
   </ng-container>
