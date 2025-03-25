@@ -42,17 +42,34 @@
   grid-auto-flow: column;
 }
 
-.guess-container {
-  display: flex;
-  gap: 0.5rem;
-  flex-direction: column;
-}
-
 .guess-text {
   align-self: center;
 }
 
 .button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.keyboard-letter-container {
+  gap: 0.5rem;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.keyboard-letter-row {
+  gap: 0.5rem;
+  display: flex;
+}
+
+.keyboard-letter {
+  width: 1rem;
+  padding: 1rem;
+  background-color: #818384;
+  border-radius: 0.5rem;
   display: flex;
   justify-content: center;
 }
