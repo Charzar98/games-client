@@ -7,8 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   getLetterCountFormControl,
   getWordleFormGroup,
-  GuessedLetterFormControl,
-  LetterState,
+  GuessedLetterFormControl, keyboardLetters,
   WordleFormGroup
 } from '../wordle-types';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -75,19 +74,19 @@ export class WordleComponent {
     }
   }
 
-  private decrementGuesses() {
-    this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
-  }
-
   public clearInputs() {
     this.wordleFormGroup.controls.guessedLetters.controls.forEach(letter => {
-      if (letter.controls.letterState.value === 'absent') {
-        letter.reset();
-      }
+      letter.reset();
     });
   }
 
   public navigateToDictionaryLink() {
     window.open(`https://www.merriam-webster.com/dictionary/${this.wordleFormGroup.controls.wordToGuess.value}`, '_blank');
   }
+
+  private decrementGuesses() {
+    this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
+  }
+
+  protected readonly keyboardLetters = keyboardLetters;
 }

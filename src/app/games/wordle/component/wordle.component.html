@@ -24,26 +24,32 @@
         }
       </div>
 
-      <div class="guess-container">
+      <div class="button-container">
         <button mat-button
                 [disabled]="wordleFormGroup.invalid"
                 (click)="guessWord()">
           Guess
         </button>
-        <div class="guess-text">Guesses left: {{ wordleFormGroup.controls.numberOfGuesses.value }}</div>
-      </div>
-      <button mat-button *ngIf="wordleFormGroup.controls.numberOfGuesses.invalid"
-              (click)="navigateToDictionaryLink()">
-        Go to Definition
-      </button>
-
-      <div class="button-container">
         <button mat-button
-                [disabled]="wordleFormGroup.controls.guessedLetters.invalid"
+                [disabled]="wordleFormGroup.controls.numberOfGuesses.invalid"
                 (click)="clearInputs()">
-          Clear Wrong Letters
+          Clear
+        </button>
+        <button mat-button *ngIf="wordleFormGroup.controls.numberOfGuesses.invalid"
+                (click)="navigateToDictionaryLink()">
+          Go to Definition
         </button>
       </div>
+    </div>
+
+    <div class="keyboard-letter-container">
+      @for (row of keyboardLetters; track $index) {
+        <div class="keyboard-letter-row">
+          @for (letter of row; track $index) {
+            <div class="keyboard-letter">{{ letter }}</div>
+          }
+        </div>
+      }
     </div>
   </ng-container>
 </div>
