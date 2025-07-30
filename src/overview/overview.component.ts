@@ -3,13 +3,12 @@ import { MatButton } from '@angular/material/button';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-overview',
-  standalone: true,
-  imports: [
-    MatButton
-  ],
-  templateUrl: './overview.component.html',
-  styleUrl: './overview.component.scss'
+    selector: 'app-overview',
+    imports: [
+        MatButton
+    ],
+    templateUrl: './overview.component.html',
+    styleUrl: './overview.component.scss'
 })
 export class OverviewComponent {
   private router: Router = inject(Router);
