@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExternalRequestsService } from '../../../services/external-requests/external-requests.service';
 import { MatInputModule } from '@angular/material/input';
@@ -8,7 +8,7 @@ import {
   getLetterCountFormControl,
   getWordleFormGroup,
   GuessedLetterFormControl,
-  KEYBOARD_LETTERS,
+  KEYBOARD_LETTERS, updateGuessedWord,
   WordleFormGroup
 } from '../wordle-types';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -35,6 +35,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 export class WordleComponent {
   public wordleFormGroup!: FormGroup<WordleFormGroup>;
   public letterCount: FormControl<number> = getLetterCountFormControl();
+  public triggerAnimationSignal = signal<boolean>(false);
 
   protected readonly keyboardLetters: string[][] = KEYBOARD_LETTERS;
 
@@ -49,14 +50,47 @@ export class WordleComponent {
     });
   }
 
-  public guessWord() {
-    this.decrementGuesses();
+  public async guessWord() {
+    updateGuessedWord(this.wordleFormGroup);
 
-    if (this.wordleFormGroup.controls.numberOfGuesses.invalid) {
-      this.wordleFormGroup.controls.guessedLetters.disable();
+    const isWordValid = ExternalRequestsService.validWordList.includes(this.wordleFormGroup.controls.guessedWord.value ?? "");
+
+    if (!isWordValid) {
+      this.snackBar.open('Not a valid word, hit the books', undefined, { duration: 5000 });
       return;
     }
 
+    this.triggerAnimationSignal.update(() => true);
+    this.decrementNumberOfGuesses();
+    this.compareGuessedLettersToTrueLetters();
+    // TODO: Figure out a better way to trigger animation
+    this.triggerAnimationSignal.update(() => false);
+  }
+
+  public validateInput(letter: FormGroup<GuessedLetterFormControl>) {
+    if (letter.invalid) {
+      letter.reset();
+    }
+  }
+
+  public clearInputs() {
+    this.wordleFormGroup.controls.guessedLetters.reset();
+  }
+
+  public navigateToDictionaryLinkInNewTab() {
+    window.open(`https://www.merriam-webster.com/dictionary/${this.wordleFormGroup.controls.wordToGuess.value}`, '_blank');
+  }
+
+  public animationTrigger(letter: string, guessedLetters: FormGroup<GuessedLetterFormControl>[]) {
+    console.log('In')
+    return guessedLetters.find(x => x.controls.letterValue.value?.toLowerCase() === letter.toLowerCase())?.controls.letterState.value;
+  }
+
+  private decrementNumberOfGuesses(): void {
+    this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
+  }
+
+  private compareGuessedLettersToTrueLetters(): void {
     for (let i = 0; i < this.wordleFormGroup.controls.trueLetters.controls.length; i++) {
       const trueLetter = this.wordleFormGroup.controls.trueLetters.controls[i];
       const guessedLetter = this.wordleFormGroup.controls.guessedLetters.controls[i];
@@ -73,27 +107,5 @@ export class WordleComponent {
           break;
       }
     }
-  }
-
-  public validateInput(letter: FormGroup<GuessedLetterFormControl>) {
-    if (letter.invalid) {
-      letter.reset();
-    }
-  }
-
-  public clearInputs() {
-    this.wordleFormGroup.controls.guessedLetters.reset();
-  }
-
-  public navigateToDictionaryLink() {
-    window.open(`https://www.merriam-webster.com/dictionary/${this.wordleFormGroup.controls.wordToGuess.value}`, '_blank');
-  }
-
-  public animationTrigger(letter: string, guessedLetters: FormGroup<GuessedLetterFormControl>[]) {
-    return guessedLetters.find(x => x.controls.letterValue.value?.toLowerCase() === letter.toLowerCase())?.controls.letterState.value;
-  }
-
-  private decrementGuesses() {
-    this.wordleFormGroup.controls.numberOfGuesses.patchValue(this.wordleFormGroup.controls.numberOfGuesses.value - 1);
   }
 }

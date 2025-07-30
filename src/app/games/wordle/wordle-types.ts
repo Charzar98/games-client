@@ -1,6 +1,6 @@
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
-export type LetterState = 'absent' | 'present' | 'correct';
+type LetterState = 'absent' | 'present' | 'correct';
 
 export interface GuessedLetterFormControl {
   letterValue: FormControl<string | null>;
@@ -13,9 +13,10 @@ export interface WordleFormGroup {
   trueLetters: FormArray<FormControl<string>>;
   // Individual letters from the word the user has guessed
   guessedLetters: FormArray<FormGroup<GuessedLetterFormControl>>;
-  wordToGuess: FormControl<string>;
   // Number of letters in wordToGuess + 1
   numberOfGuesses: FormControl<number>;
+  guessedWord: FormControl<string | null>;
+  wordToGuess: FormControl<string>;
 }
 
 function getGuessedLetterFormGroup() {
@@ -38,6 +39,7 @@ export function getWordleFormGroup(word: string): FormGroup<WordleFormGroup> {
       }))),
     guessedLetters: new FormArray<FormGroup<GuessedLetterFormControl>>(
       word.split('').map(_ => getGuessedLetterFormGroup())),
+    guessedWord: new FormControl<string | null>(null),
     numberOfGuesses: new FormControl<number>(word.length + 1, {
       nonNullable: true,
       validators: [Validators.min(1), Validators.max(word.length + 1)]
@@ -50,6 +52,13 @@ export function getLetterCountFormControl(letterCount?: number): FormControl<num
     nonNullable: true,
     validators: [Validators.required, Validators.min(3), Validators.max(10)]
   });
+}
+
+export function updateGuessedWord(wordleFormGroup: FormGroup<WordleFormGroup>) {
+  return wordleFormGroup.controls.guessedWord.patchValue(
+    wordleFormGroup.controls.guessedLetters.controls
+      .map(x => x.controls.letterValue.value)
+      .join(''));
 }
 
 export const KEYBOARD_LETTERS: string[][] = [

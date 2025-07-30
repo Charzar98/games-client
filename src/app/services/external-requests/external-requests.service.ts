@@ -6,14 +6,28 @@ import { firstValueFrom, map } from 'rxjs';
   providedIn: 'root'
 })
 export class ExternalRequestsService {
+  public static validWordList: string[] = [];
+  private static url = 'https://random-word-api.herokuapp.com/word';
+
   private http: HttpClient = inject(HttpClient);
 
-  public getRandomWord(wordLength: number) {
-    const url = 'https://random-word-api.herokuapp.com/word';
-    const params = new HttpParams().set('length', wordLength);
+  public async getRandomWord(wordLength: number) {
+    const params: HttpParams = new HttpParams().set('length', wordLength);
 
-    return firstValueFrom(this.http.get<string[]>(url, { params }).pipe(
+    ExternalRequestsService.validWordList = await this.getValidWordList(wordLength)
+    return firstValueFrom(this.http.get<string[]>(ExternalRequestsService.url, { params }).pipe(
       map(result => result[0])
     ));
+  }
+
+  private getValidWordList(wordLength: number) {
+    const url = 'https://random-word-api.herokuapp.com/word';
+    const javaMaxSafeInt: number = 2147483647;
+
+    const params: HttpParams = new HttpParams()
+      .set('number', javaMaxSafeInt)
+      .set('length', wordLength);
+
+    return firstValueFrom(this.http.get<string[]>(url, { params }));
   }
 }

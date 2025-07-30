@@ -11,13 +11,14 @@
     </button>
   </div>
 
-  <ng-container *ngIf="wordleFormGroup" [formGroup]="wordleFormGroup">
+  @if (wordleFormGroup) {
     <div class="word-container">
       <div class="word-row" appWordleRowDirective (emitEnter)="guessWord()">
-        @for (letter of wordleFormGroup.controls.guessedLetters.controls; track letter.controls.letterValue; let index = $index) {
+        @for (letter of wordleFormGroup.controls.guessedLetters.controls; track $index;) {
           <div class="letter-container" @elementEnter>
             <input id="letter-input" class="letter-input" [@guessLetterAnimation]="letter.controls.letterState.value"
                    [maxLength]="1"
+                   [disabled]="wordleFormGroup.controls.numberOfGuesses.invalid"
                    [formControl]="letter.controls.letterValue"
                    (input)="validateInput(letter)">
           </div>
@@ -36,7 +37,7 @@
           Clear
         </button>
         <button mat-button *ngIf="wordleFormGroup.controls.numberOfGuesses.invalid"
-                (click)="navigateToDictionaryLink()">
+                (click)="navigateToDictionaryLinkInNewTab()">
           Go to Definition
         </button>
       </div>
@@ -46,11 +47,11 @@
       @for (row of keyboardLetters; track $index) {
         <div class="keyboard-letter-row">
           @for (letter of row; track $index) {
-            <div class="keyboard-letter" [@guessLetterAnimation]="animationTrigger(letter, wordleFormGroup.controls.guessedLetters.controls)">{{ letter }}</div>
+            <div class="keyboard-letter" [@guessLetterAnimation]="triggerAnimationSignal() ? animationTrigger(letter, wordleFormGroup.controls.guessedLetters.controls) : null">{{ letter }}</div>
           }
         </div>
       }
     </div>
     <div>Guesses Left: {{ wordleFormGroup.controls.numberOfGuesses.value }}</div>
-  </ng-container>
+  }
 </div>
