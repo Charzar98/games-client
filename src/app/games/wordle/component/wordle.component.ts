@@ -53,10 +53,10 @@ export class WordleComponent {
   public async guessWord() {
     updateGuessedWord(this.wordleFormGroup);
 
-    const isWordValid = ExternalRequestsService.validWordList.includes(this.wordleFormGroup.controls.guessedWord.value ?? "");
+    const isWordValid = ExternalRequestsService._validWordList.includes(this.wordleFormGroup.controls.guessedWord.value ?? "");
 
     if (!isWordValid) {
-      this.snackBar.open('Not a valid word, hit the books', undefined, { duration: 5000 });
+      this.snackBar.open('Not a valid word, hit the books bozo', undefined, { duration: 5000 });
       return;
     }
 
