@@ -21,7 +21,10 @@
     "@angular/router": "^19.2.14",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.1"
+    "zone.js": "~0.15.1",
+    "webpack-dev-server": ">=5.2.1",
+    "http-proxy-middleware": ">=3.0.4",
+    "esbuild": ">=0.25.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.15",
@@ -34,6 +37,9 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "webpack-dev-server": ">=5.2.1",
+    "http-proxy-middleware": ">=3.0.4",
+    "esbuild": ">=0.25.0"
   }
 }
