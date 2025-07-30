@@ -16,20 +16,21 @@ import { WordleRowDirective } from '../wordle-row.directive';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'app-wordle',
-  standalone: true,
-  imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSnackBarModule, WordleRowDirective],
-  templateUrl: './wordle.component.html',
-  styleUrls: ['./wordle.component.scss'],
-  animations: [
-    trigger('elementEnter', [
-      transition(':enter', [style({ opacity: 0 }), animate(2000, style({ opacity: 1 }))]),]),
-    trigger('guessLetterAnimation', [
-      state('absent', style({ backgroundColor: '#3a3a3c' })),
-      state('present', style({ backgroundColor: '#b59f3b' })),
-      state('correct', style({ backgroundColor: '#538d4e' })),
-      transition('* => *', animate(1000, style({ transform: 'rotate(1turn)' })))
-    ])]
+    selector: 'app-wordle',
+    imports: [CommonModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSnackBarModule, WordleRowDirective],
+    templateUrl: './wordle.component.html',
+    styleUrls: ['./wordle.component.scss'],
+    animations: [
+        trigger('elementEnter', [
+            transition(':enter', [style({ opacity: 0 }), animate(2000, style({ opacity: 1 }))]),
+        ]),
+        trigger('guessLetterAnimation', [
+            state('absent', style({ backgroundColor: '#3a3a3c' })),
+            state('present', style({ backgroundColor: '#b59f3b' })),
+            state('correct', style({ backgroundColor: '#538d4e' })),
+            transition('* => *', animate(1000, style({ transform: 'rotate(1turn)' })))
+        ])
+    ]
 })
 export class WordleComponent {
   public wordleFormGroup!: FormGroup<WordleFormGroup>;

@@ -5,16 +5,15 @@ import { MatIcon } from '@angular/material/icon';
 import { ThemeService } from './services/theme/theme.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    MatIconButton,
-    MatIcon,
-  ],
-  standalone: true
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    imports: [
+        RouterOutlet,
+        RouterLink,
+        MatIconButton,
+        MatIcon,
+    ]
 })
 export class AppComponent {
   private readonly themeService: ThemeService = inject(ThemeService);
